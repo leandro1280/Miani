@@ -1,0 +1,14 @@
+# Fotos con copyright del fotógrafo (NO subir a repo público)
+*.jpg
+*.jpeg
+*.png
+*.webp
+
+# Skills del sistema (archivos internos de las agent skills)
+.agents/
+skills-lock.json
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

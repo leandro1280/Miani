@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Panel de Administración · Dra. Lorenia Miani</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'serif': ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        'sans': ['"Inter"', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        gold: { 400: '#D4AF37', 500: '#BF9A2C', 300: '#E8C54F' },
+                        navy: { 50: '#E8EDF4', 100: '#C5D1E4', 200: '#9AB0CF', 500: '#2B5797', 700: '#162D4A', 800: '#0F2035', 900: '#091420', 950: '#050C14' },
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(100%);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(212, 175, 55, .4);
+            }
+
+            50% {
+                box-shadow: 0 0 0 14px rgba(212, 175, 55, 0);
+            }
+        }
+
+        @keyframes shimmer {
+
+            0%,
+            100% {
+                border-color: #D4AF37;
+            }
+
+            50% {
+                border-color: #E8C54F;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn .4s ease-out forwards;
+        }
+
+        .drawer-up {
+            animation: slideUp .3s cubic-bezier(.16, 1, .3, 1) forwards;
+        }
+
+        .drawer-down {
+            animation: slideDown .25s cubic-bezier(.16, 1, .3, 1) forwards;
+        }
+
+        .pulse-gold {
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        .shimmer-ring {
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .tab-btn.active {
+            background: #0F2035;
+            color: #D4AF37;
+            font-weight: 600;
+        }
+
+        .tab-btn:not(.active) {
+            background: #F1F5F9;
+            color: #475569;
+        }
+
+        .tab-btn:not(.active):hover {
+            background: #E2E8F0;
+        }
+
+        .preview-card {
+            transition: all .3s ease;
+        }
+
+        .preview-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(9, 20, 32, .12);
+        }
+
+        .share-modal-bg {
+            background: rgba(9, 20, 32, .8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #D4AF37;
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, .12);
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-navy-50 text-navy-900 antialiased min-h-screen">
+
+    <!-- ==================== TOP BAR ==================== -->
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-navy-100 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-navy-900 flex items-center justify-center shadow-md">
+                    <i class="fa-solid fa-gear text-gold-400 text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="font-serif text-base font-bold text-navy-900">Panel de Administración</h1>
+                    <p class="text-[10px] text-navy-400 tracking-wide">Dra. Lorenia Miani</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="index.html" target="_blank"
+                    class="flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium text-navy-600 bg-navy-50 hover:bg-navy-100 rounded-full transition-colors touch-target">
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Ver Portal
+                </a>
+                <div
+                    class="w-8 h-8 rounded-full bg-gradient-to-br from-navy-700 to-navy-900 flex items-center justify-center border-2 border-gold-400/50 shimmer-ring">
+                    <i class="fa-solid fa-user-tie text-gold-300 text-xs"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== MAIN LAYOUT ==================== -->
+    <div class="max-w-5xl mx-auto px-4 py-6 lg:flex lg:gap-6">
+
+        <!-- ===== SIDEBAR (mobile: tabs, desktop: sidebar) ===== -->
+        <aside class="lg:w-56 flex-shrink-0 mb-5 lg:mb-0">
+            <nav class="flex lg:flex-col gap-1.5 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0" role="tablist">
+                <button
+                    class="tab-btn active flex-shrink-0 lg:flex-shrink px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 touch-target flex items-center gap-2.5"
+                    data-tab="editor">
+                    <i class="fa-solid fa-pen-to-square w-5 text-center"></i> Crear Post
+                </button>
+                <button
+                    class="tab-btn flex-shrink-0 lg:flex-shrink px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 touch-target flex items-center gap-2.5"
+                    data-tab="published">
+                    <i class="fa-solid fa-list-check w-5 text-center"></i> Publicados
+                </button>
+                <button
+                    class="tab-btn flex-shrink-0 lg:flex-shrink px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 touch-target flex items-center gap-2.5"
+                    data-tab="share">
+                    <i class="fa-solid fa-share-nodes w-5 text-center"></i> Compartir
+                </button>
+                <button
+                    class="tab-btn flex-shrink-0 lg:flex-shrink px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 touch-target flex items-center gap-2.5"
+                    data-tab="stats">
+                    <i class="fa-solid fa-chart-simple w-5 text-center"></i> Estadísticas
+                </button>
+            </nav>
+
+            <!-- WhatsApp CTA -->
+            <div class="hidden lg:block mt-6 p-4 bg-white rounded-2xl border border-navy-100">
+                <p class="text-[11px] font-semibold text-navy-700 mb-2">📱 ¿Necesitás ayuda?</p>
+                <a href="https://wa.me/5490000000000" target="_blank"
+                    class="flex items-center gap-2 w-full px-4 py-2.5 bg-emerald-500 text-white text-xs font-semibold rounded-full hover:bg-emerald-600 transition-colors text-center justify-center touch-target">
+                    <i class="fa-brands fa-whatsapp"></i> Soporte Espinosa Labs
+                </a>
+            </div>
+        </aside>
+
+        <!-- ===== MAIN CONTENT AREA ===== -->
+        <main class="flex-1 min-w-0">
+
+            <!-- ========== TAB: EDITOR DE POSTS ========== -->
+            <section id="panel-editor" class="tab-panel space-y-5">
+                <div class="bg-white rounded-2xl border border-navy-100 p-5 sm:p-6 shadow-sm">
+                    <h2 class="font-serif text-xl font-bold text-navy-900 mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-gold-400"></i> Crear Nueva Publicación
+                    </h2>
+                    <p class="text-xs text-navy-400 mb-5">Completá el formulario y previsualizá cómo se verá en tu
+                        portal</p>
+
+                    <!-- Form -->
+                    <div class="space-y-4">
+                        <div>
+                            <label
+                                class="text-[11px] font-semibold text-navy-600 uppercase tracking-wide mb-1.5 block">Título</label>
+                            <input type="text" id="postTitle"
+                                class="w-full px-4 py-3 bg-navy-50 border border-navy-200 rounded-xl text-sm text-navy-800 placeholder-navy-300 transition-all"
+                                placeholder="Ej: Nueva condena por abuso en La Angostura">
+                        </div>
+                        <div class="grid sm:grid-cols-3 gap-4">
+                            <div>
+                                <label
+                                    class="text-[11px] font-semibold text-navy-600 uppercase tracking-wide mb-1.5 block">Categoría</label>
+                                <select id="postCategory"
+                                    class="w-full px-4 py-3 bg-navy-50 border border-navy-200 rounded-xl text-sm text-navy-800 transition-all">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="prensa">Prensa / Medios</option>
+                                    <option value="cursos">Cursos y Congresos</option>
+                                    <option value="articulos">Artículos / Análisis</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    class="text-[11px] font-semibold text-navy-600 uppercase tracking-wide mb-1.5 block">Medio
+                                    / Fuente</label>
+                                <input type="text" id="postSource"
+                                    class="w-full px-4 py-3 bg-navy-50 border border-navy-200 rounded-xl text-sm text-navy-800 placeholder-navy-300 transition-all"
+                                    placeholder="Ej: Río Negro">
+                            </div>
+                            <div>
+                                <label
+                                    class="text-[11px] font-semibold text-navy-600 uppercase tracking-wide mb-1.5 block">Fecha</label>
+                                <input type="text" id="postDate"
+                                    class="w-full px-4 py-3 bg-navy-50 border border-navy-200 rounded-xl text-sm text-navy-800 placeholder-navy-300 transition-all"
+                                    placeholder="Ej: Agosto 2026">
+                            </div>
+                        </div>
+                        <div>
+                            <label
+                                class="text-[11px] font-semibold text-navy-600 uppercase tracking-wide mb-1.5 block">Link
+                                de la nota (opcional)</label>
+                            <input type="url" id="postLink"
+                                class="w-full px-4 py-3 bg-navy-50 border border-navy-200 rounded-xl text-sm text-navy-800 placeholder-navy-300 transition-all"
+                                placeholder="https://www...">
+                        </div>
+                        <div>
+                            <label
+                                class="text-[11px] font-semibold text-navy-600 uppercase tracking-wide mb-1.5 block">Contenido</label>
+                            <textarea id="postContent" rows="4"
+                                class="w-full px-4 py-3 bg-navy-50 border border-navy-200 rounded-xl text-sm text-navy-800 placeholder-navy-300 transition-all resize-none"
+                                placeholder="Redactá el contenido de la publicación..."></textarea>
+                        </div>
+                        <div>
+                            <label
+                                class="text-[11px] font-semibold text-navy-600 uppercase tracking-wide mb-1.5 block">Imagen
+                                (simulada)</label>
+                            <div id="imageDropzone"
+                                class="bg-navy-50 border-2 border-dashed border-navy-200 rounded-xl p-6 text-center cursor-pointer hover:border-gold-400/50 transition-all"
+                                onclick="simulateImageUpload()">
+                                <i class="fa-solid fa-cloud-arrow-up text-navy-300 text-2xl mb-2"></i>
+                                <p class="text-xs text-navy-400">Hacer clic para <span
+                                        class="text-gold-500 font-semibold">simular subida de imagen</span></p>
+                                <p class="text-[10px] text-navy-300 mt-1">JPG, PNG o WebP · Máx. 5 MB</p>
+                                <span id="imageStatus"
+                                    class="hidden text-[10px] text-emerald-600 font-medium mt-2 block">✅ Imagen cargada
+                                    (simulación)</span>
+                            </div>
+                        </div>
+                        <button id="btnCreatePost"
+                            class="w-full py-3.5 bg-navy-900 text-white text-sm font-semibold rounded-full hover:bg-navy-800 active:bg-navy-950 transition-colors touch-target shadow-lg shadow-navy-900/15 pulse-gold">
+                            <i class="fa-solid fa-paper-plane mr-1.5"></i> Publicar Ahora
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Preview en vivo -->
+                <div class="bg-navy-50 rounded-2xl border border-navy-200 p-5 sm:p-6">
+                    <h3 class="font-serif text-base font-bold text-navy-800 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-eye text-gold-400"></i> Vista Previa en el Portal
+                    </h3>
+                    <div class="bg-white rounded-2xl border border-navy-100 overflow-hidden preview-card shadow-sm max-w-md mx-auto"
+                        id="previewCard">
+                        <div class="aspect-[4/3] bg-gradient-to-br from-navy-700 to-navy-900 flex items-center justify-center relative overflow-hidden"
+                            id="previewImageContainer">
+                            <div class="text-center text-navy-400" id="previewImagePlaceholder">
+                                <i class="fa-solid fa-image text-4xl mb-2 opacity-30"></i>
+                                <p class="text-xs opacity-40">Tu imagen aquí</p>
+                            </div>
+                            <span id="previewBadge"
+                                class="absolute top-3 left-3 px-3 py-1.5 bg-gold-400/95 text-navy-900 text-[10px] font-bold uppercase tracking-wider rounded-full shadow-md opacity-0 transition-opacity">Categoría</span>
+                            <div class="absolute bottom-3 left-3 right-3 opacity-0 transition-opacity"
+                                id="previewOverlayText">
+                                <p class="text-white font-serif text-base font-semibold leading-tight drop-shadow-md"
+                                    id="previewOverlayTitle"></p>
+                                <p class="text-gold-200 text-[10px] font-medium mt-0.5" id="previewOverlayDate"></p>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-navy-600 text-xs leading-relaxed" id="previewContent">Tu contenido aparecerá
+                                aquí...</p>
+                            <div class="flex items-center gap-1 pt-3 border-t border-navy-50 mt-3">
+                                <span class="flex items-center gap-1 px-3 py-2 text-navy-400 text-xs"><i
+                                        class="fa-regular fa-heart"></i>0</span>
+                                <span class="flex items-center gap-1 px-3 py-2 text-navy-400 text-xs"><i
+                                        class="fa-regular fa-message"></i>0</span>
+                                <span
+                                    class="flex items-center gap-1 px-3 py-2 bg-navy-900 text-white text-[10px] font-semibold rounded-full ml-auto"><i
+                                        class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i> Leer Nota</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== TAB: PUBLICADOS ========== -->
+            <section id="panel-published" class="tab-panel hidden space-y-4">
+                <div class="bg-white rounded-2xl border border-navy-100 p-5 sm:p-6 shadow-sm">
+                    <h2 class="font-serif text-xl font-bold text-navy-900 mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-gold-400"></i> Posts Publicados
+                    </h2>
+                    <p class="text-xs text-navy-400 mb-5">Historial de publicaciones · <span id="postCount">6</span>
+                        posts en el portal</p>
+                    <div id="publishedList" class="space-y-3">
+                        <!-- Se llena con JS -->
+                    </div>
+                    <div id="emptyPostsMessage" class="hidden text-center py-8">
+                        <i class="fa-solid fa-pen-to-square text-navy-200 text-4xl mb-3"></i>
+                        <p class="text-sm text-navy-400">Aún no hay posts creados desde este panel</p>
+                        <p class="text-xs text-navy-300 mt-1">Ve a la pestaña "Crear Post" para publicar tu primer
+                            contenido</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== TAB: COMPARTIR EN REDES ========== -->
+            <section id="panel-share" class="tab-panel hidden space-y-5">
+                <div class="bg-white rounded-2xl border border-navy-100 p-5 sm:p-6 shadow-sm">
+                    <h2 class="font-serif text-xl font-bold text-navy-900 mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-share-nodes text-gold-400"></i> Compartir en Redes
+                    </h2>
+                    <p class="text-xs text-navy-400 mb-5">Seleccioná un post para compartir en WhatsApp, Instagram,
+                        LinkedIn y más</p>
+
+                    <!-- Post selector -->
+                    <div class="mb-5">
+                        <label
+                            class="text-[11px] font-semibold text-navy-600 uppercase tracking-wide mb-1.5 block">Seleccionar
+                            Post</label>
+                        <select id="sharePostSelector"
+                            class="w-full px-4 py-3 bg-navy-50 border border-navy-200 rounded-xl text-sm text-navy-800 transition-all">
+                            <option value="">Elegir publicación...</option>
+                        </select>
+                    </div>
+
+                    <!-- Share buttons -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="shareButtonsContainer">
+                        <button
+                            class="flex flex-col items-center gap-2 p-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/20 rounded-2xl transition-all touch-target opacity-40 pointer-events-none share-action-btn"
+                            data-platform="whatsapp-status">
+                            <i class="fa-brands fa-whatsapp text-2xl text-[#25D366]"></i>
+                            <span class="text-[10px] font-semibold text-navy-700 text-center">WhatsApp<br>Estado</span>
+                        </button>
+                        <button
+                            class="flex flex-col items-center gap-2 p-4 bg-[#E4405F]/10 hover:bg-[#E4405F]/20 border border-[#E4405F]/20 rounded-2xl transition-all touch-target opacity-40 pointer-events-none share-action-btn"
+                            data-platform="instagram-story">
+                            <i class="fa-brands fa-instagram text-2xl text-[#E4405F]"></i>
+                            <span
+                                class="text-[10px] font-semibold text-navy-700 text-center">Instagram<br>Historia</span>
+                        </button>
+                        <button
+                            class="flex flex-col items-center gap-2 p-4 bg-[#0A66C2]/10 hover:bg-[#0A66C2]/20 border border-[#0A66C2]/20 rounded-2xl transition-all touch-target opacity-40 pointer-events-none share-action-btn"
+                            data-platform="linkedin">
+                            <i class="fa-brands fa-linkedin-in text-2xl text-[#0A66C2]"></i>
+                            <span class="text-[10px] font-semibold text-navy-700 text-center">LinkedIn<br>Post</span>
+                        </button>
+                        <button
+                            class="flex flex-col items-center gap-2 p-4 bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 border border-[#1DA1F2]/20 rounded-2xl transition-all touch-target opacity-40 pointer-events-none share-action-btn"
+                            data-platform="x">
+                            <i class="fa-brands fa-x-twitter text-2xl text-[#1DA1F2]"></i>
+                            <span class="text-[10px] font-semibold text-navy-700 text-center">X /
+                                Twitter<br>Tweet</span>
+                        </button>
+                        <button
+                            class="flex flex-col items-center gap-2 p-4 bg-navy-100 hover:bg-navy-200 border border-navy-200 rounded-2xl transition-all touch-target opacity-40 pointer-events-none share-action-btn"
+                            data-platform="copy-link">
+                            <i class="fa-solid fa-link text-2xl text-navy-500"></i>
+                            <span class="text-[10px] font-semibold text-navy-700 text-center">Copiar<br>Enlace</span>
+                        </button>
+                        <button
+                            class="flex flex-col items-center gap-2 p-4 bg-navy-100 hover:bg-navy-200 border border-navy-200 rounded-2xl transition-all touch-target opacity-40 pointer-events-none share-action-btn"
+                            data-platform="telegram">
+                            <i class="fa-brands fa-telegram text-2xl text-[#26A5E4]"></i>
+                            <span class="text-[10px] font-semibold text-navy-700 text-center">Telegram<br>Canal</span>
+                        </button>
+                    </div>
+                    <p id="shareHelper" class="text-[10px] text-navy-300 text-center mt-4">Seleccioná un post para
+                        habilitar las opciones de compartir</p>
+                </div>
+            </section>
+
+            <!-- ========== TAB: ESTADÍSTICAS ========== -->
+            <section id="panel-stats" class="tab-panel hidden space-y-5">
+                <div class="bg-white rounded-2xl border border-navy-100 p-5 sm:p-6 shadow-sm">
+                    <h2 class="font-serif text-xl font-bold text-navy-900 mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-simple text-gold-400"></i> Estadísticas del Portal
+                    </h2>
+                    <p class="text-xs text-navy-400 mb-5">Resumen de actividad · Datos simulados para demostración</p>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+                        <div class="bg-navy-900 rounded-2xl p-4 text-center"><span
+                                class="font-serif text-2xl font-bold text-white">2.450</span>
+                            <p class="text-[9px] text-gold-400 mt-1">Visitas/mes</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-gold-300 to-gold-500 rounded-2xl p-4 text-center"><span
+                                class="font-serif text-2xl font-bold text-navy-900">+18%</span>
+                            <p class="text-[9px] text-navy-700 mt-1">Crecimiento</p>
+                        </div>
+                        <div class="bg-white border border-navy-100 rounded-2xl p-4 text-center"><span
+                                class="font-serif text-2xl font-bold text-navy-800">6</span>
+                            <p class="text-[9px] text-navy-400 mt-1">Posts activos</p>
+                        </div>
+                        <div class="bg-white border border-navy-100 rounded-2xl p-4 text-center"><span
+                                class="font-serif text-2xl font-bold text-navy-800">85%</span>
+                            <p class="text-[9px] text-navy-400 mt-1">Mobile</p>
+                        </div>
+                    </div>
+                    <div class="bg-navy-50 rounded-2xl p-4">
+                        <h4 class="text-xs font-semibold text-navy-800 mb-3 flex items-center gap-2"><i
+                                class="fa-solid fa-globe-americas text-gold-500"></i>Top Países</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-[11px] font-semibold mb-1"><span>🇦🇷
+                                        Argentina</span><span>1.120</span></div>
+                                <div class="h-2 bg-navy-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-navy-800 rounded-full" style="width:82%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[11px] font-semibold mb-1"><span>🇨🇴
+                                        Colombia</span><span>680</span></div>
+                                <div class="h-2 bg-navy-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-navy-700 rounded-full" style="width:50%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[11px] font-semibold mb-1"><span>🇲🇽
+                                        México</span><span>410</span></div>
+                                <div class="h-2 bg-navy-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-navy-600 rounded-full" style="width:30%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ==================== SHARE MODAL ==================== -->
+    <div id="shareModal" class="fixed inset-0 z-50 hidden flex items-end sm:items-center justify-center"
+        aria-hidden="true">
+        <div class="absolute inset-0 share-modal-bg" id="shareModalBackdrop"></div>
+        <div id="shareModalContent"
+            class="relative bg-white rounded-t-[2rem] sm:rounded-3xl shadow-2xl w-full sm:max-w-md max-h-[80vh] overflow-y-auto drawer-up">
+            <div class="flex sm:hidden justify-center pt-3 pb-1">
+                <div class="w-12 h-1.5 bg-navy-200 rounded-full"></div>
+            </div>
+            <div class="p-6 text-center">
+                <div class="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center" id="shareModalIcon">
+                    <i class="fa-brands fa-whatsapp text-3xl text-[#25D366]"></i>
+                </div>
+                <h3 class="font-serif text-lg font-bold text-navy-900 mb-1" id="shareModalTitle">Compartir en WhatsApp
+                </h3>
+                <p class="text-xs text-navy-500 mb-5" id="shareModalDesc">Tu publicación está lista para compartirse
+                    como estado o mensaje</p>
+                <div class="bg-navy-50 rounded-2xl p-4 text-left mb-5">
+                    <p class="text-[10px] font-semibold text-navy-500 uppercase tracking-wide mb-1">Mensaje sugerido:
+                    </p>
+                    <p class="text-xs text-navy-700 leading-relaxed" id="shareModalPreview">...</p>
+                </div>
+                <button id="btnCopyShare"
+                    class="w-full py-3 bg-navy-900 text-white text-sm font-semibold rounded-full hover:bg-navy-800 active:bg-navy-950 transition-colors touch-target shadow-md mb-2">
+                    <i class="fa-solid fa-copy mr-1.5"></i> Copiar Mensaje
+                </button>
+                <button id="btnCloseShare"
+                    class="w-full py-3 bg-white border border-navy-200 text-navy-600 text-sm font-medium rounded-full hover:bg-navy-50 transition-colors touch-target">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TOAST ==================== -->
+    <div id="toast"
+        class="fixed bottom-20 left-1/2 -translate-x-1/2 z-[100] bg-navy-900 text-white px-5 py-3.5 rounded-full shadow-2xl text-sm font-medium opacity-0 translate-y-4 pointer-events-none transition-all duration-300 whitespace-nowrap border border-navy-700"
+        role="status" aria-live="polite">
+        <span id="toastMsg"></span>
+    </div>
+
+    <script>
+            (function () {
+                'use strict';
+
+                // ============ STATE ============
+                const userPosts = JSON.parse(localStorage.getItem('miani_admin_posts') || '[]');
+                function savePosts() { localStorage.setItem('miani_admin_posts', JSON.stringify(userPosts)); }
+
+                // ============ DOM REFS ============
+                const tabBtns = document.querySelectorAll('.tab-btn');
+                const tabPanels = document.querySelectorAll('.tab-panel');
+                const publishedList = document.getElementById('publishedList');
+                const emptyPostsMessage = document.getElementById('emptyPostsMessage');
+                const postCount = document.getElementById('postCount');
+                const sharePostSelector = document.getElementById('sharePostSelector');
+                const shareButtonsContainer = document.getElementById('shareButtonsContainer');
+                const shareHelper = document.getElementById('shareHelper');
+                const shareModal = document.getElementById('shareModal');
+                const shareModalContent = document.getElementById('shareModalContent');
+                const shareModalBackdrop = document.getElementById('shareModalBackdrop');
+                const shareModalIcon = document.getElementById('shareModalIcon').querySelector('i');
+                const shareModalTitle = document.getElementById('shareModalTitle');
+                const shareModalDesc = document.getElementById('shareModalDesc');
+                const shareModalPreview = document.getElementById('shareModalPreview');
+                const btnCopyShare = document.getElementById('btnCopyShare');
+                const btnCloseShare = document.getElementById('btnCloseShare');
+                const toast = document.getElementById('toast');
+                const toastMsg = document.getElementById('toastMsg');
+
+                let selectedSharePost = null;
+                let selectedSharePlatform = null;
+                let toastTimer;
+
+                function showToast(m) {
+                    toastMsg.textContent = m;
+                    toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+                    toast.classList.add('opacity-100', 'translate-y-0');
+                    clearTimeout(toastTimer);
+                    toastTimer = setTimeout(function () {
+                        toast.classList.add('opacity-0', 'translate-y-4');
+                        toast.classList.remove('opacity-100', 'translate-y-0');
+                        setTimeout(function () { toast.classList.add('pointer-events-none'); }, 300);
+                    }, 3000);
+                }
+
+                // ============ TABS ============
+                tabBtns.forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var t = this.getAttribute('data-tab');
+                        tabBtns.forEach(function (b) { b.classList.remove('active'); });
+                        this.classList.add('active');
+                        tabPanels.forEach(function (p) { p.classList.add('hidden'); });
+                        document.getElementById('panel-' + t).classList.remove('hidden');
+                    });
+                });
+
+                // ============ LIVE PREVIEW ============
+                var titleInput = document.getElementById('postTitle');
+                var categoryInput = document.getElementById('postCategory');
+                var sourceInput = document.getElementById('postSource');
+                var dateInput = document.getElementById('postDate');
+                var contentInput = document.getElementById('postContent');
+                var previewBadge = document.getElementById('previewBadge');
+                var previewOverlayText = document.getElementById('previewOverlayText');
+                var previewOverlayTitle = document.getElementById('previewOverlayTitle');
+                var previewOverlayDate = document.getElementById('previewOverlayDate');
+                var previewContent = document.getElementById('previewContent');
+                var previewImageContainer = document.getElementById('previewImageContainer');
+                var previewImagePlaceholder = document.getElementById('previewImagePlaceholder');
+                var imageStatus = document.getElementById('imageStatus');
+
+                var catLabels = { prensa: 'Prensa', cursos: 'Capacitación', articulos: 'Análisis' };
+                var catColors = { prensa: 'bg-red-500/90 text-white', cursos: 'bg-gold-400/95 text-navy-900', articulos: 'bg-amber-500/90 text-navy-900' };
+
+                function updatePreview() {
+                    var t = titleInput.value.trim();
+                    var c = categoryInput.value;
+                    var d = dateInput.value.trim();
+                    var ct = contentInput.value.trim();
+
+                    if (c && catLabels[c]) {
+                        previewBadge.textContent = catLabels[c];
+                        previewBadge.className = 'absolute top-3 left-3 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-full shadow-md transition-opacity ' + (catColors[c] || 'bg-gold-400/95 text-navy-900');
+                        previewBadge.style.opacity = '1';
+                    } else {
+                        previewBadge.style.opacity = '0';
+                    }
+
+                    if (t || d) {
+                        previewOverlayTitle.textContent = t || 'Tu título aquí';
+                        previewOverlayDate.textContent = (sourceInput.value.trim() ? sourceInput.value.trim() + ' · ' : '') + (d || 'Fecha');
+                        previewOverlayText.style.opacity = '1';
+                    } else {
+                        previewOverlayText.style.opacity = '0';
+                    }
+
+                    previewContent.textContent = ct || 'Tu contenido aparecerá aquí...';
+                }
+
+                titleInput.addEventListener('input', updatePreview);
+                categoryInput.addEventListener('change', function () { updatePreview(); });
+                sourceInput.addEventListener('input', updatePreview);
+                dateInput.addEventListener('input', updatePreview);
+                contentInput.addEventListener('input', updatePreview);
+
+                // ============ SIMULATE IMAGE UPLOAD ============
+                window.simulateImageUpload = function () {
+                    imageStatus.classList.remove('hidden');
+                    previewImagePlaceholder.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500 text-4xl mb-2"></i><p class="text-xs text-emerald-600 font-medium">Imagen lista</p>';
+                    previewImageContainer.style.background = 'linear-gradient(135deg, #1E3A5F 0%, #0F2035 50%, #162D4A 100%)';
+                    showToast('📸 Imagen cargada (simulación de demostración)');
+                };
+
+                // ============ CREATE POST ============
+                document.getElementById('btnCreatePost').addEventListener('click', function () {
+                    var title = titleInput.value.trim();
+                    var category = categoryInput.value;
+                    var source = sourceInput.value.trim();
+                    var date = dateInput.value.trim();
+                    var link = document.getElementById('postLink').value.trim();
+                    var content = contentInput.value.trim();
+
+                    if (!title) { showToast('⚠️ Por favor ingresá un título'); titleInput.focus(); return; }
+                    if (!category) { showToast('⚠️ Seleccioná una categoría'); return; }
+                    if (!content) { showToast('⚠️ Escribí el contenido de la publicación'); contentInput.focus(); return; }
+
+                    var newPost = {
+                        id: 'up_' + Date.now(),
+                        title: title,
+                        category: category,
+                        source: source,
+                        date: date || new Date().toLocaleDateString('es-AR', { year: 'numeric', month: 'long' }),
+                        link: link,
+                        content: content,
+                        createdAt: new Date().toISOString(),
+                        likes: 0,
+                        comments: 0
+                    };
+
+                    userPosts.unshift(newPost);
+                    savePosts();
+                    renderPublishedPosts();
+                    updateShareSelector();
+
+                    // Reset form
+                    titleInput.value = '';
+                    categoryInput.value = '';
+                    sourceInput.value = '';
+                    dateInput.value = '';
+                    document.getElementById('postLink').value = '';
+                    contentInput.value = '';
+                    imageStatus.classList.add('hidden');
+                    previewImagePlaceholder.innerHTML = '<i class="fa-solid fa-image text-4xl mb-2 opacity-30"></i><p class="text-xs opacity-40">Tu imagen aquí</p>';
+                    previewImageContainer.style.background = '';
+                    previewBadge.style.opacity = '0';
+                    previewOverlayText.style.opacity = '0';
+                    previewContent.textContent = 'Tu contenido aparecerá aquí...';
+                    updatePreview();
+
+                    showToast('✅ ¡Publicación creada! Ya está en tu portal');
+                });
+
+                // ============ RENDER PUBLISHED ============
+                function renderPublishedPosts() {
+                    if (userPosts.length === 0) {
+                        publishedList.innerHTML = '';
+                        emptyPostsMessage.classList.remove('hidden');
+                        postCount.textContent = '0';
+                        return;
+                    }
+                    emptyPostsMessage.classList.add('hidden');
+                    postCount.textContent = (6 + userPosts.length).toString();
+                    publishedList.innerHTML = userPosts.map(function (p, i) {
+                        var badgeClass = catColors[p.category] || 'bg-gold-400/95 text-navy-900';
+                        var badgeLabel = catLabels[p.category] || p.category;
+                        return '<div class="bg-navy-50 rounded-2xl p-4 animate-fade-in" style="animation-delay:' + (i * 0.05) + 's">' +
+                            '<div class="flex items-start justify-between gap-3">' +
+                            '<div class="flex-1 min-w-0">' +
+                            '<span class="inline-block px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider rounded-full mb-2 ' + badgeClass + '">' + badgeLabel + '</span>' +
+                            '<p class="font-serif text-sm font-bold text-navy-900 leading-snug mb-1">' + esc(p.title) + '</p>' +
+                            '<p class="text-[11px] text-navy-500 mb-2">' + esc(p.date) + (p.source ? ' · ' + esc(p.source) : '') + '</p>' +
+                            '<p class="text-xs text-navy-600 leading-relaxed line-clamp-2">' + esc(p.content) + '</p>' +
+                            '</div>' +
+                            '<div class="flex gap-1 flex-shrink-0">' +
+                            '<button class="share-single-post w-8 h-8 rounded-full bg-navy-100 flex items-center justify-center hover:bg-gold-100 hover:text-gold-600 transition-colors touch-target" data-post-id="' + p.id + '" title="Compartir"><i class="fa-solid fa-share-nodes text-xs"></i></button>' +
+                            '<button class="delete-post w-8 h-8 rounded-full bg-red-50 flex items-center justify-center hover:bg-red-100 hover:text-red-500 transition-colors touch-target" data-post-id="' + p.id + '" title="Eliminar"><i class="fa-solid fa-trash-can text-xs"></i></button>' +
+                            '</div>' +
+                            '</div></div>';
+                    }).join('');
+
+                    // Attach delete
+                    publishedList.querySelectorAll('.delete-post').forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            var pid = this.getAttribute('data-post-id');
+                            if (confirm('¿Eliminar esta publicación? Esta acción es simulada.')) {
+                                var idx = userPosts.findIndex(function (p) { return p.id === pid; });
+                                if (idx >= 0) { userPosts.splice(idx, 1); savePosts(); renderPublishedPosts(); updateShareSelector(); showToast('🗑️ Publicación eliminada'); }
+                            }
+                        });
+                    });
+
+                    // Attach share from list
+                    publishedList.querySelectorAll('.share-single-post').forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            var pid = this.getAttribute('data-post-id');
+                            var post = userPosts.find(function (p) { return p.id === pid; });
+                            if (post) { selectedSharePost = post; enableShareButtons(); showToast('📤 Post seleccionado. Elegí una plataforma para compartir'); }
+                        });
+                    });
+                }
+
+                function updateShareSelector() {
+                    sharePostSelector.innerHTML = '<option value="">Elegir publicación...</option>';
+                    userPosts.forEach(function (p) {
+                        sharePostSelector.innerHTML += '<option value="' + p.id + '">' + esc(p.title.substring(0, 60)) + '</option>';
+                    });
+                    enableShareButtons();
+                }
+
+                function enableShareButtons() {
+                    if (sharePostSelector.value || selectedSharePost) {
+                        shareButtonsContainer.querySelectorAll('.share-action-btn').forEach(function (b) {
+                            b.classList.remove('opacity-40', 'pointer-events-none');
+                        });
+                        shareHelper.textContent = 'Hacé clic en una plataforma para simular la publicación';
+                        shareHelper.classList.add('text-gold-500');
+                        shareHelper.classList.remove('text-navy-300');
+                    } else {
+                        shareButtonsContainer.querySelectorAll('.share-action-btn').forEach(function (b) {
+                            b.classList.add('opacity-40', 'pointer-events-none');
+                        });
+                        shareHelper.textContent = 'Seleccioná un post para habilitar las opciones de compartir';
+                        shareHelper.classList.remove('text-gold-500');
+                        shareHelper.classList.add('text-navy-300');
+                    }
+                }
+
+                sharePostSelector.addEventListener('change', function () {
+                    var pid = this.value;
+                    if (pid) {
+                        var post = userPosts.find(function (p) { return p.id === pid; });
+                        selectedSharePost = post || null;
+                    } else {
+                        selectedSharePost = null;
+                    }
+                    enableShareButtons();
+                });
+
+                // ============ SHARE ACTIONS ============
+                var platformConfig = {
+                    'whatsapp-status': { icon: 'fa-brands fa-whatsapp', color: '#25D366', name: 'WhatsApp', type: 'Estado', prefix: '📢 *Novedad jurídica:*\n\n' },
+                    'instagram-story': { icon: 'fa-brands fa-instagram', color: '#E4405F', name: 'Instagram', type: 'Historia', prefix: '📢 Novedad jurídica:\n\n' },
+                    'linkedin': { icon: 'fa-brands fa-linkedin-in', color: '#0A66C2', name: 'LinkedIn', type: 'Post', prefix: '📢 Comparto esta novedad profesional:\n\n' },
+                    'x': { icon: 'fa-brands fa-x-twitter', color: '#1DA1F2', name: 'X / Twitter', type: 'Tweet', prefix: '' },
+                    'copy-link': { icon: 'fa-solid fa-link', color: '#475569', name: 'Enlace', type: 'Copiar', prefix: '' },
+                    'telegram': { icon: 'fa-brands fa-telegram', color: '#26A5E4', name: 'Telegram', type: 'Canal', prefix: '📢 *Novedad jurídica:*\n\n' },
+                };
+
+                shareButtonsContainer.querySelectorAll('.share-action-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        var platform = this.getAttribute('data-platform');
+                        var post = selectedSharePost || (sharePostSelector.value ? userPosts.find(function (p) { return p.id === sharePostSelector.value; }) : null);
+                        if (!post) return;
+
+                        selectedSharePlatform = platform;
+                        var cfg = platformConfig[platform];
+                        if (!cfg) return;
+
+                        shareModalIcon.className = cfg.icon + ' text-3xl';
+                        shareModalIcon.style.color = cfg.color;
+                        shareModalIcon.parentElement.style.backgroundColor = cfg.color + '15';
+                        shareModalTitle.textContent = 'Compartir en ' + cfg.name;
+                        shareModalDesc.textContent = 'Tu publicación está lista para compartirse como ' + cfg.type;
+
+                        var msg = cfg.prefix + '*' + post.title + '*\n\n' + post.content;
+                        if (post.link) { msg += '\n\n🔗 ' + post.link; }
+                        if (post.source) { msg += '\n📰 Fuente: ' + post.source; }
+                        msg += '\n\n⚖️ Dra. Lorenia Miani · Derecho Penal';
+                        shareModalPreview.textContent = msg;
+
+                        openShareModal();
+                    });
+                });
+
+                function openShareModal() {
+                    shareModal.classList.remove('hidden');
+                    shareModal.setAttribute('aria-hidden', 'false');
+                    shareModalContent.classList.remove('drawer-down');
+                    shareModalContent.classList.add('drawer-up');
+                    document.body.style.overflow = 'hidden';
+                }
+                function closeShareModal() {
+                    shareModalContent.classList.remove('drawer-up');
+                    shareModalContent.classList.add('drawer-down');
+                    setTimeout(function () {
+                        shareModal.classList.add('hidden');
+                        shareModal.setAttribute('aria-hidden', 'true');
+                        document.body.style.overflow = '';
+                    }, 250);
+                }
+                btnCloseShare.addEventListener('click', closeShareModal);
+                shareModalBackdrop.addEventListener('click', closeShareModal);
+
+                btnCopyShare.addEventListener('click', function () {
+                    var text = shareModalPreview.textContent;
+                    navigator.clipboard.writeText(text).then(function () {
+                        showToast('📋 ¡Mensaje copiado! Compartilo en ' + (platformConfig[selectedSharePlatform] ? platformConfig[selectedSharePlatform].name : 'tus redes'));
+                    }).catch(function () {
+                        showToast('📋 Mensaje listo para compartir (simulación)');
+                    });
+                    closeShareModal();
+                });
+
+                // ============ ESCAPE ============
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && !shareModal.classList.contains('hidden')) {
+                        closeShareModal();
+                    }
+                });
+
+                function esc(s) {
+                    var d = document.createElement('div');
+                    d.textContent = s;
+                    return d.innerHTML;
+                }
+
+                // ============ INIT ============
+                renderPublishedPosts();
+                updateShareSelector();
+
+                console.log('%c🎛️  Panel Admin %c· %cDra. Lorenia Miani %c· %cEspinosa Labs',
+                    'color:#D4AF37;font-size:14px;font-weight:bold;', '',
+                    'color:#0F2035;font-weight:bold;', '',
+                    'color:#94A3B8;font-size:10px;');
+            })();
+    </script>
+
+</body>
+
+</html>
