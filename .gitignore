@@ -1,8 +1,5 @@
 # Fotos con copyright del fotógrafo (NO subir a repo público)
-*.jpg
-*.jpeg
-*.png
-*.webp
+
 
 # Skills del sistema (archivos internos de las agent skills)
 .agents/
